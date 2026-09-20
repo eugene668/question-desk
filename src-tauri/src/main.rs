@@ -2,5 +2,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
+    dotenvy::dotenv().ok();
     question_desk_lib::run()
 }

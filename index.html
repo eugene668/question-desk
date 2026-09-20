@@ -2,19 +2,66 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href="/src/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4efe7" />
     <title>Question Desk</title>
     <script type="module" src="/src/main.ts" defer></script>
   </head>
-
   <body>
-    <main class="container">
-      <h1>Question Desk</h1>
-      <p>
-        Scaffold only — build the log form, the question list, and the draft
-        button here as part of M2/M3/M4. See the project brief.
-      </p>
+    <main class="app-shell">
+      <header class="masthead">
+        <div>
+          <p class="eyebrow">Forward deployed / field notes</p>
+          <h1>Question Desk</h1>
+          <p class="intro">Keep the hard questions close. Build a careful first response.</p>
+        </div>
+        <div class="status-mark" aria-label="Local-first workspace">
+          <span class="status-dot"></span>
+          <span>Local desk</span>
+        </div>
+      </header>
+
+      <section class="workspace" aria-label="Question workspace">
+        <section class="capture-panel" aria-labelledby="capture-title">
+          <div class="section-heading">
+            <p class="eyebrow">01 / capture</p>
+            <h2 id="capture-title">Log a question</h2>
+          </div>
+          <form id="question-form">
+            <label for="question">Question <span aria-hidden="true">*</span></label>
+            <textarea id="question" name="question" rows="5" required placeholder="What were you asked?"></textarea>
+
+            <div class="field-grid">
+              <div>
+                <label for="asker">Who asked?</label>
+                <input id="asker" name="asker" type="text" placeholder="e.g. youth group" />
+              </div>
+              <div>
+                <label for="context">Where / context</label>
+                <input id="context" name="context" type="text" placeholder="e.g. after Sunday session" />
+              </div>
+            </div>
+
+            <label for="tags">Tags <span class="muted">comma-separated</span></label>
+            <input id="tags" name="tags" type="text" placeholder="e.g. suffering, scripture" />
+
+            <button class="primary-button" type="submit">Save question <span aria-hidden="true">↗</span></button>
+          </form>
+          <p id="form-status" class="form-status" role="status"></p>
+        </section>
+
+        <section class="list-panel" aria-labelledby="list-title">
+          <div class="list-heading">
+            <div class="section-heading">
+              <p class="eyebrow">02 / desk</p>
+              <h2 id="list-title">Saved questions</h2>
+            </div>
+            <span id="question-count" class="count-badge">0</span>
+          </div>
+          <div id="error-message" class="error-message" role="alert" hidden></div>
+          <div id="question-list" class="question-list"></div>
+        </section>
+      </section>
     </main>
   </body>
 </html>

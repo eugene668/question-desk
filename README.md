@@ -1,53 +1,62 @@
-# Question Desk — starter scaffold
+# Question Desk
 
-This is the **bare scaffold only** for Forward Deployed Expertise Training,
-Project 01. It's a Tauri + Vanilla TypeScript app that opens an empty
-"Question Desk" window and does nothing else yet. The `greet` demo command
-has been removed on purpose — you're building the real commands.
+Question Desk is a small Tauri desktop app for logging difficult questions locally and preparing a careful AI-assisted first response. Questions and drafts stay in one JSON file owned by the Rust side of the app.
 
-See the full project brief (`AI_Skill_builder_Project_01_Question_Desk.pdf`)
-for what to build and in what order (M0–M6).
+## Run it
 
-## Using this scaffold
+From a fresh clone:
 
-1. Create an empty repo on GitHub named `question-desk` (private is fine).
-2. Unzip this folder's contents into your clone of that repo — don't zip the
-   repo itself, copy the files *into* it — so `README.md`, `src/`,
-   `src-tauri/`, etc. sit at the repo root next to `.git/`.
-3. Commit it as your starting point:
-   ```
-   git add .
-   git commit -m "chore: scaffold tauri app"
-   git push
-   ```
-4. Install and run:
-   ```
-   npm install
-   npm run tauri dev
-   ```
-   An empty "Question Desk" window should open. If it does, you're on M1 and
-   ready to start M2 (the Rust store).
-
-## What's here
-
-- `index.html` / `src/main.ts` / `src/styles.css` — empty frontend shell.
-- `src-tauri/src/lib.rs` — Tauri app entry point, no commands registered yet.
-- `src-tauri/tauri.conf.json` — app renamed to Question Desk.
-- `.gitignore` / `.env.example` — see below.
-
-## Setting your API key (needed from M4 onward)
-
-Copy `.env.example` to `.env` and fill in your key:
-
-```
-cp .env.example .env
+```text
+npm install
+npm run tauri dev
 ```
 
-`.env` is git-ignored — it should never be committed. Load it in Rust with
-the `dotenvy` crate, per the project brief.
+The app requires Node.js, Rust, and the Tauri Windows WebView2 prerequisite from the setup guide. The project root is the directory containing this README and `package.json`.
 
-## Prerequisites
+To build the frontend only:
 
-If `npm install` or `npm run tauri dev` fail, re-check the
-[Toolchain Setup Guide](../AI_Skill_builder_Set_up.pdf) — this scaffold
-assumes all 8 setup steps already pass.
+```text
+npm run build
+```
+
+## API key
+
+AI drafting is optional. Without a key, saving, listing, and deleting questions continue to work and the Draft action shows a clear error.
+
+For real drafts, copy `.env.example` to `.env` and fill in the key:
+
+```text
+ANTHROPIC_API_KEY=your-key-here
+```
+
+`.env` is ignored and must never be committed. The key is read only by Rust; it is never sent to the frontend.
+
+The draft request uses Anthropic's Messages API with the `claude-sonnet-5` model alias. The response must be JSON with a `draft` string and 2 to 4 `verify` items.
+
+## Weekly report
+
+The report uses Python's standard library only. With the app's default data location:
+
+```text
+python scripts/report.py --days 7
+```
+
+You can provide a file explicitly when testing or moving data:
+
+```text
+python scripts/report.py --file path/to/questions.json --days 7 --output team-report.csv
+```
+
+The default `questions.json` locations are:
+
+- Windows: `%APPDATA%\africa.apakan.question-desk\questions.json`
+- macOS: `~/Library/Application Support/africa.apakan.question-desk/questions.json`
+- Linux: `~/.local/share/africa.apakan.question-desk/questions.json` (or `$XDG_DATA_HOME/africa.apakan.question-desk/questions.json`)
+
+The script prints the count logged, count drafted, and most common tags, then writes `report_YYYY-MM-DD.csv` with `id`, `asked_at`, `asker`, `question`, `tags`, and `has_draft` columns.
+
+## Known limitations
+
+- AI drafts require network access and a valid Anthropic API key.
+- The app uses a single JSON file, so it is intended for one local user rather than concurrent multi-device editing.
+- The AI output is a starting point only. Verify claims and sources before using it.
